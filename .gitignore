@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+data/*.db
+data/*.sqlite
+
+# Build output and backups
+dist.backup*/
+*.backup

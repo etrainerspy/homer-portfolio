@@ -164,6 +164,78 @@ app.post("/api/contact", (req, res) => {
   return res.status(200).json({ ok: true });
 });
 
+function requireAdmin(req, res, next) {
+  const authHeader = req.headers.authorization || "";
+  const token = authHeader.replace("Bearer ", "");
+
+  if (!process.env.ADMIN_TOKEN || token !== process.env.ADMIN_TOKEN) {
+    return res.status(401).json({ ok: false, error: "Unauthorized" });
+  }
+
+  next();
+}
+
+app.get("/api/admin/contact-submissions", requireAdmin, (req, res) => {
+  const search = clean(req.query.search || "");
+
+  let rows;
+
+  if (search) {
+    rows = db.prepare(`
+      SELECT
+        id,
+        created_at,
+        first_name,
+        last_name,
+        email,
+        phone,
+        service,
+        substr(message, 1, 120) AS message_preview
+      FROM contact_submissions
+      WHERE
+        first_name LIKE ?
+        OR last_name LIKE ?
+        OR email LIKE ?
+        OR service LIKE ?
+      ORDER BY id DESC
+      LIMIT 100
+    `).all(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
+  } else {
+    rows = db.prepare(`
+      SELECT
+        id,
+        created_at,
+        first_name,
+        last_name,
+        email,
+        phone,
+        service,
+        substr(message, 1, 120) AS message_preview
+      FROM contact_submissions
+      ORDER BY id DESC
+      LIMIT 100
+    `).all();
+  }
+
+  res.json({ ok: true, submissions: rows });
+});
+
+app.get("/api/admin/contact-submissions/:id", requireAdmin, (req, res) => {
+  const id = Number(req.params.id);
+
+  const row = db.prepare(`
+    SELECT *
+    FROM contact_submissions
+    WHERE id = ?
+  `).get(id);
+
+  if (!row) {
+    return res.status(404).json({ ok: false, error: "Not found" });
+  }
+
+  res.json({ ok: true, submission: row });
+});
+
 app.listen(PORT, () => {
   console.log(`Contact server running on port ${PORT}`);
 });

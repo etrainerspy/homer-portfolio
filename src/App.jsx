@@ -6,6 +6,7 @@ import Training from "./pages/Training";
 import Experience from "./pages/Experience";
 import Contact from "./pages/Contact";
 import "./App.css";
+import Admin from "./pages/Admin";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/training" element={<Training />} />
             <Route path="/experience" element={<Experience />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </main>
       </div>

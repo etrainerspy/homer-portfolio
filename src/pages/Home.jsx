@@ -60,7 +60,7 @@ function Home() {
 
               <div className="profile-info">
 
-                <h3>Homer Reynolds</h3>
+                <p>Homer Reynolds</p>
 
                 <p>Independent Software Engineer</p>
 
