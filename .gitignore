@@ -23,9 +23,18 @@ dist-ssr
 *.sln
 *.sw?
 
-data/*.db
-data/*.sqlite
+# Environment secrets
+.env
+.env.*
+!.env.example
 
 # Build output and backups
+dist/
 dist.backup*/
 *.backup
+
+# Database files
+data/*.db
+data/*.sqlite
+data/*.db-shm
+data/*.db-wal
